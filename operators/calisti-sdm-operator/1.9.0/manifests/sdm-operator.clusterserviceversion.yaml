@@ -64,6 +64,7 @@ metadata:
     capabilities: Basic Install
     createdAt: "2023-05-01T02:44:38Z"
     operators.operatorframework.io/builder: operator-sdk-v1.28.0
+    operators.operatorframework.io/internal-objects: '["clusterfeatures.clusterregistry.k8s.cisco.com", "clusters.clusterregistry.k8s.cisco.com", "resourcesyncrules.clusterregistry.k8s.cisco.com", "metadata.extensions.cisco.com", "healthindicatorgroups.health.smm.cisco.com", "healthindicators.health.smm.cisco.com", "network-attachment-definitions.k8s.cni.cncf.io", "cruisecontroloperations.kafka.banzaicloud.io", "kafkaclusters.kafka.banzaicloud.io", "kafkatopics.kafka.banzaicloud.io", "kafkausers.kafka.banzaicloud.io", "alertmanagerconfigs.monitoring.smm.cisco.com", "alertmanagers.monitoring.smm.cisco.com", "podmonitors.monitoring.smm.cisco.com", "probes.monitoring.smm.cisco.com", "prometheuses.monitoring.smm.cisco.com", "prometheusrules.monitoring.smm.cisco.com", "servicemonitors.monitoring.smm.cisco.com", "thanosrulers.monitoring.smm.cisco.com", "istiocontrolplanes.servicemesh.cisco.com", "istiomeshes.servicemesh.cisco.com", "istiomeshgateways.servicemesh.cisco.com", "peeristiocontrolplanes.servicemesh.cisco.com", "clouddoorgateways.smm.cisco.com", "controlplanes.smm.cisco.com", "demoapplications.smm.cisco.com", "istiooperators.smm.cisco.com", "licenses.smm.cisco.com", "alertingpolicies.sre.smm.cisco.com", "alertingtemplates.sre.smm.cisco.com", "servicelevelindicatortemplates.sre.smm.cisco.com", "servicelevelobjectives.sre.smm.cisco.com"]'
   name: calisti-sdm-operator.v1.9.0
   namespace: supertubes-control-plane
 spec:
@@ -75,7 +76,6 @@ spec:
       name: applicationmanifests.supertubes.banzaicloud.io
       displayName: Calisti Streaming Data Manager
       version: v1beta1
-    required:
     - description: ClusterFeature is the Schema for the clusterfeatures API
       kind: ClusterFeature
       name: clusterfeatures.clusterregistry.k8s.cisco.com
@@ -141,7 +141,7 @@ spec:
       kind: Alertmanager
       name: alertmanagers.monitoring.smm.cisco.com
       displayName: Alertmanager
-      version: v1alpha1
+      version: v1
     - description: PodMonitor defines monitoring for a set of pods
       kind: PodMonitor
       name: podmonitors.monitoring.smm.cisco.com
