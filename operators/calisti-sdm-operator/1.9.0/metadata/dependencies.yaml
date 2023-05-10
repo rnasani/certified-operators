@@ -1,0 +1,6 @@
+---
+#dependencies:
+#  - type: olm.package
+#    value:
+#      packageName: smm-operator.v1.12.0
+#      version: "1.12.0"
