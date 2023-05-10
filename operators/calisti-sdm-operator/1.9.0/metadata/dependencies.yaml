@@ -1,0 +1,6 @@
+---
+dependencies:
+  - type: olm.package
+    value:
+      packageName: calisti-smm-operator
+      version: "1.12.0"
