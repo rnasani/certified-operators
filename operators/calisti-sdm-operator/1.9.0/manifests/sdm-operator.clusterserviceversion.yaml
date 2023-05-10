@@ -62,9 +62,8 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2023-05-01T02:44:38Z"
+    createdAt: "2023-05-10T02:44:38Z"
     operators.operatorframework.io/builder: operator-sdk-v1.28.0
-    operators.operatorframework.io/internal-objects: '["clusterfeatures.clusterregistry.k8s.cisco.com", "clusters.clusterregistry.k8s.cisco.com", "resourcesyncrules.clusterregistry.k8s.cisco.com", "metadata.extensions.cisco.com", "healthindicatorgroups.health.smm.cisco.com", "healthindicators.health.smm.cisco.com", "network-attachment-definitions.k8s.cni.cncf.io", "cruisecontroloperations.kafka.banzaicloud.io", "kafkaclusters.kafka.banzaicloud.io", "kafkatopics.kafka.banzaicloud.io", "kafkausers.kafka.banzaicloud.io", "alertmanagerconfigs.monitoring.smm.cisco.com", "alertmanagers.monitoring.smm.cisco.com", "podmonitors.monitoring.smm.cisco.com", "probes.monitoring.smm.cisco.com", "prometheuses.monitoring.smm.cisco.com", "prometheusrules.monitoring.smm.cisco.com", "servicemonitors.monitoring.smm.cisco.com", "thanosrulers.monitoring.smm.cisco.com", "istiocontrolplanes.servicemesh.cisco.com", "istiomeshes.servicemesh.cisco.com", "istiomeshgateways.servicemesh.cisco.com", "peeristiocontrolplanes.servicemesh.cisco.com", "clouddoorgateways.smm.cisco.com", "controlplanes.smm.cisco.com", "demoapplications.smm.cisco.com", "istiooperators.smm.cisco.com", "licenses.smm.cisco.com", "alertingpolicies.sre.smm.cisco.com", "alertingtemplates.sre.smm.cisco.com", "servicelevelindicatortemplates.sre.smm.cisco.com", "servicelevelobjectives.sre.smm.cisco.com"]'
   name: calisti-sdm-operator.v1.9.0
   namespace: supertubes-control-plane
 spec:
@@ -83,16 +82,27 @@ spec:
     installed, configured, and managed in order to operate a production-ready Kafka cluster on Kubernetes.
 
     ### Prerequisites
-    1. Create a supertubes-control-plane namespace:
+    1. Create a namespace called supertubes-control-plane:
 
         ```
         $ kubectl create ns supertubes-control-plane
         ```
 
-    2. Add a secret within the supertubes-control-plane namespace. If you don't have registry credentials, get it from [here](https://calisti.app/download)
+    2. Make sure that smm-operator is installed already, if not install smm-operator from OpertorHub
 
         ```
-        $ kubectl create secret docker-registry smm-pull-secret --docker-server=registry.eticloud.io --docker-username=<your-username> --docker-password=<your-password> -n supertubes-control-plane
+        $ kubectl get pods -n smm-registry-access | grep smm-operator
+        ```
+    3. Apply ControlPlane resource with sdm enabled (Refer listed example in the OperatorHub)
+
+        ```
+        $ kubectl apply -f sdm-smm.yaml
+        ```
+
+    4. Create a secret named supertubes-manifest-controller-serving-cert with tls certs
+
+        ```
+        $ kubectl apply -f <manifest> -n supertubes-control-plane
         ```
 
   displayName: The Calisti Streaming Data Manager
@@ -364,7 +374,7 @@ spec:
                 - --upstream=http://127.0.0.1:8080/
                 - --logtostderr=true
                 - --v=10
-                image: registry.eticloud.io/smm/kube-rbac-proxy@sha256:1c28ae21422c4a4be0bcc8993ca2837545bc5e1d4d085c908c4c242fc8948e65
+                image: registry.eticloud.io/smm/kube-rbac-proxy@sha256:a7ad67d100e9d25e2997871fe1ebd0d17aeea4d8c382c7d658ea4000dd766b7a
                 name: rbac-proxy
                 ports:
                 - containerPort: 8443
@@ -382,7 +392,7 @@ spec:
                 - --zap-devel=false
                 - --zap-encoder=console
                 - --zap-log-level=info
-                image: registry.eticloud.io/sdm/supertubes-control-plane-rh-ubi8@sha256:fbeb72714630f6786ada48d083230cef3af4cfc787e52e6ca4e94953944d45d6
+                image: registry.eticloud.io/sdm/supertubes-control-plane-rh-ubi8@sha256:11bab90770b60d52c6a063d95235fc7908b5f597dd3d756d2ef48cab881d75fd
                 name: manager
                 env:
                   - name: SDM_FRONTEND_ENABLED
@@ -426,7 +436,7 @@ spec:
                 - name: serving-cert
                   secret:
                     secretName: supertubes-manifest-controller-serving-cert
-              terminationGracePeriodSeconds: 10
+              terminationGracePeriodSeconds: 60
       permissions:
       - rules:
         - apiGroups:
@@ -463,21 +473,22 @@ spec:
         serviceAccountName: sdm-operator-supertubes-control-plane
     strategy: deployment
   installModes:
-  - supported: false
+  - supported: true
     type: OwnNamespace
   - supported: false
     type: SingleNamespace
   - supported: false
     type: MultiNamespace
-  - supported: true
+  - supported: false
     type: AllNamespaces
   keywords:
   - Calisti
   - Kafka
+  - Service Mesh Manager
   - Streaming Data Manager
   maintainers:
-    - email: rnasani@cisco.com
-      name: Ravi Nasani
+  - email: rnasani@cisco.com
+    name: Ravi Nasani
   links:
   - name: The Calisti Streaming Data Manager
     url: https://calisti.app/
